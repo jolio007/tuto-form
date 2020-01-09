@@ -19,9 +19,9 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-//    /**
-//     * @return User[] Returns an array of User objects
-//     */
+    //    /**
+    //     * @return User[] Returns an array of User objects
+    //     */
     /*
     public function findByExampleField($value)
     {
@@ -47,4 +47,11 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findAllEmailAlphabetical()
+    {
+        return $this->createQueryBuilder('u')
+            ->orderBy('u.email', 'ASC')
+            ->getQuery()
+            ->execute();
+    }
 }

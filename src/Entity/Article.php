@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ArticleRepository;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -32,6 +34,7 @@ class Article
     /**
      * @ORM\Column(type="string", length=100, unique=true)
      * @Gedmo\Slug(fields={"title"})
+     * @Assert\NotBlank()
      */
     private $slug;
 
@@ -250,5 +253,16 @@ class Article
         $this->author = $author;
 
         return $this;
+    }
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if (stripos($this->getTitle(), 'the borg') !== false) {
+            $context->buildViolation('Um.. the Bork kinda makes us nervous')
+                ->atPath('title')
+                ->addViolation();
+        }
     }
 }
